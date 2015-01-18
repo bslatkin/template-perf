@@ -6,13 +6,24 @@
 </head>
 <body>
   <table>
-   <thead>
-    <tr>
-     <th>Name <th>Colour <th>Sex <th>Legs
-   <tbody>
-    {{range .}}
-     <tr><td>{{.Name}}<td>{{.Color}}<td>{{.Sex}}<td>{{.Legs}}
-    {{end}}
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Colour</th>
+        <th>Sex</th>
+        <th>Legs</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .}}
+        <tr>
+          <td>{{.Name}}</td>
+          <td>{{.Color}}</td>
+          <td>{{.Sex}}</td>
+          <td>{{.Legs}}</td>
+        </tr>
+      {{end}}
+    </tbody>
   </table>
   <!-- Example based on https://html.spec.whatwg.org/multipage/scripting.html#the-template-element -->
 </body>

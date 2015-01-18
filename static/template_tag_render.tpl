@@ -2,21 +2,30 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Client render</title>
+  <title>Template tag render</title>
   <script>
-   // Data is hard-coded here, but could come server
-   var data = {{.}};
+    var data = {{.}};
   </script>
 </head>
 <body>
   <table>
-   <thead>
-    <tr>
-     <th>Name <th>Colour <th>Sex <th>Legs
-   <tbody>
-    <template id="row">
-     <tr><td><td><td><td>
-    </template>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Colour</th>
+        <th>Sex</th>
+        <th>Legs</th>
+    </thead>
+    <tbody>
+      <template id="row">
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </template>
+    </tbody>
   </table>
   <script>
     var template = document.querySelector('#row');
