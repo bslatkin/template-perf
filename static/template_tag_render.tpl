@@ -6,6 +6,17 @@
   <script>
     var data = {{.}};
   </script>
+  <script>
+    function onLoad() {
+      var x = window.chrome.loadTimes();
+      if (x.firstPaintAfterLoadTime == 0) {
+        window.setTimeout(onLoad, 1000);
+        return;
+      }
+      console.log('Seconds to first paint: ' + (x.firstPaintTime - x.startLoadTime));
+      console.log('Seconds to first paint after load: ' + (x.firstPaintAfterLoadTime - x.startLoadTime));
+    }
+  </script>
 </head>
 <body>
   <table>
@@ -40,6 +51,7 @@
       template.parentNode.appendChild(clone);
     }
   </script>
+  <script>onLoad()</script>
   <!-- Example based on https://html.spec.whatwg.org/multipage/scripting.html#the-template-element -->
 </body>
 </html>

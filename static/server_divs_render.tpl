@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Server render</title>
+  <title>Server divs render</title>
   <script>
     function onLoad() {
       var x = window.chrome.loadTimes();
@@ -16,26 +16,14 @@
   </script>
 </head>
 <body>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Colour</th>
-        <th>Sex</th>
-        <th>Legs</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{range .}}
-        <tr>
-          <td>{{.Name}}</td>
-          <td>{{.Color}}</td>
-          <td>{{.Sex}}</td>
-          <td>{{.Legs}}</td>
-        </tr>
-      {{end}}
-    </tbody>
-  </table>
+  {{range .}}
+    <div>
+      <span>{{.Name}}</span>
+      <span>{{.Color}}</span>
+      <span>{{.Sex}}</span>
+      <span>{{.Legs}}</span>
+    </div>
+  {{end}}
   <script>onLoad()</script>
   <!-- Example based on https://html.spec.whatwg.org/multipage/scripting.html#the-template-element -->
 </body>
