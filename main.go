@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/bslatkin/template-perf/static"
 	"github.com/daaku/go.httpgzip"
@@ -27,7 +28,7 @@ var (
 	serverDivsTemplate  = template.Must(template.New("dynamic").Parse(static.Files["server_divs_render.tpl"]))
 )
 
-func dataForTemplate() template.JS {
+func dataForTemplate(data []Data) template.JS {
 	encoded, err := json.Marshal(data)
 	if err != nil {
 		panic(err)
@@ -37,26 +38,38 @@ func dataForTemplate() template.JS {
 	return template.JS(buffer.Bytes())
 }
 
+func getCatsFromParam(r *http.Request) []Data {
+	count, err := strconv.Atoi(r.FormValue("count"))
+	if err != nil {
+		count = 1000
+	}
+	return getCats(count)
+}
+
 func domRenderHandler(w http.ResponseWriter, r *http.Request) {
-	if err := domTemplate.Execute(w, dataForTemplate()); err != nil {
+	cats := getCatsFromParam(r)
+	if err := domTemplate.Execute(w, dataForTemplate(cats)); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
 func templateTagRenderHandler(w http.ResponseWriter, r *http.Request) {
-	if err := templateTagTemplate.Execute(w, dataForTemplate()); err != nil {
+	cats := getCatsFromParam(r)
+	if err := templateTagTemplate.Execute(w, dataForTemplate(cats)); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
 func serverRenderHandle(w http.ResponseWriter, r *http.Request) {
-	if err := serverTemplate.Execute(w, data); err != nil {
+	cats := getCatsFromParam(r)
+	if err := serverTemplate.Execute(w, cats); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
 func serverDivsRenderHandle(w http.ResponseWriter, r *http.Request) {
-	if err := serverDivsTemplate.Execute(w, data); err != nil {
+	cats := getCatsFromParam(r)
+	if err := serverDivsTemplate.Execute(w, cats); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

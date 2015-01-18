@@ -1,14 +1,9 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
 	"math/rand"
-	"os"
 	"time"
 )
-
-// build +ignore
 
 var (
 	// From http://en.wikipedia.org/wiki/Popular_cat_names
@@ -180,6 +175,8 @@ var (
 )
 
 func init() {
+	rand.Seed(time.Now().UnixNano())
+
 	for i := 0; i < 100; i++ {
 		legOptions = append(legOptions, 4)
 	}
@@ -195,24 +192,14 @@ func init() {
 	legOptions = append(legOptions, 0)
 }
 
-func main() {
-	rand.Seed(time.Now().UnixNano())
-
-	handle, err := os.Create("cats.go")
-	if err != nil {
-		panic(err)
-	}
-	defer handle.Close()
-	w := bufio.NewWriter(handle)
-	defer w.Flush()
-	fmt.Fprintf(w, "package main\n")
-	fmt.Fprintf(w, "var data = []Data{\n")
-	for i := 0; i < 10000; i++ {
+func getCats(count int) []Data {
+	result := make([]Data, 0, count)
+	for i := 0; i < count; i++ {
 		name := names[rand.Intn(len(names))]
 		color := colors[rand.Intn(len(colors))]
 		sex := sexes[rand.Intn(len(sexes))]
 		legs := legOptions[rand.Intn(len(legOptions))]
-		fmt.Fprintf(w, "Data{%#v, %#v, %#v, %#v},\n", name, color, sex, legs)
+		result = append(result, Data{name, color, sex, legs})
 	}
-	fmt.Fprintf(w, "}\n")
+	return result
 }
