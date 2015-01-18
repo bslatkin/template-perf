@@ -24,6 +24,7 @@ var (
 	domTemplate         = template.Must(template.New("static").Parse(static.Files["dom_render.tpl"]))
 	templateTagTemplate = template.Must(template.New("static").Parse(static.Files["template_tag_render.tpl"]))
 	serverTemplate      = template.Must(template.New("dynamic").Parse(static.Files["server_render.tpl"]))
+	serverDivsTemplate  = template.Must(template.New("dynamic").Parse(static.Files["server_divs_render.tpl"]))
 )
 
 func dataForTemplate() template.JS {
@@ -54,6 +55,12 @@ func serverRenderHandle(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func serverDivsRenderHandle(w http.ResponseWriter, r *http.Request) {
+	if err := serverDivsTemplate.Execute(w, data); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
 func wrapHandler(h http.Handler) http.Handler {
 	gzipHandler := httpgzip.NewHandler(h)
 	handler := func(w http.ResponseWriter, r *http.Request) {
@@ -74,6 +81,7 @@ func init() {
 	http.Handle("/dom_render", wrapHandler(http.HandlerFunc(domRenderHandler)))
 	http.Handle("/template_tag_render", wrapHandler(http.HandlerFunc(templateTagRenderHandler)))
 	http.Handle("/server_render", wrapHandler(http.HandlerFunc(serverRenderHandle)))
+	http.Handle("/server_divs_render", wrapHandler(http.HandlerFunc(serverDivsRenderHandle)))
 }
 
 func main() {
