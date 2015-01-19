@@ -24,6 +24,7 @@ type Data struct {
 var (
 	domTemplate          = template.Must(template.New("static").Parse(static.Files["dom_render.tpl"]))
 	fragmentDivsTemplate = template.Must(template.New("static").Parse(static.Files["fragment_divs_render.tpl"]))
+	rafTemplate          = template.Must(template.New("static").Parse(static.Files["raf_render.tpl"]))
 	templateTagTemplate  = template.Must(template.New("static").Parse(static.Files["template_tag_render.tpl"]))
 	serverTemplate       = template.Must(template.New("dynamic").Parse(static.Files["server_render.tpl"]))
 	serverDivsTemplate   = template.Must(template.New("dynamic").Parse(static.Files["server_divs_render.tpl"]))
@@ -57,6 +58,13 @@ func domRenderHandler(w http.ResponseWriter, r *http.Request) {
 func fragmentDivsRenderHandler(w http.ResponseWriter, r *http.Request) {
 	cats := getCatsFromParam(r)
 	if err := fragmentDivsTemplate.Execute(w, dataForTemplate(cats)); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func rafRenderHandler(w http.ResponseWriter, r *http.Request) {
+	cats := getCatsFromParam(r)
+	if err := rafTemplate.Execute(w, dataForTemplate(cats)); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
@@ -101,6 +109,7 @@ func wrapHandler(h http.Handler) http.Handler {
 func init() {
 	http.Handle("/dom_render", wrapHandler(http.HandlerFunc(domRenderHandler)))
 	http.Handle("/fragment_divs_render", wrapHandler(http.HandlerFunc(fragmentDivsRenderHandler)))
+	http.Handle("/raf_render", wrapHandler(http.HandlerFunc(rafRenderHandler)))
 	http.Handle("/template_tag_render", wrapHandler(http.HandlerFunc(templateTagRenderHandler)))
 	http.Handle("/server_render", wrapHandler(http.HandlerFunc(serverRenderHandle)))
 	http.Handle("/server_divs_render", wrapHandler(http.HandlerFunc(serverDivsRenderHandle)))
