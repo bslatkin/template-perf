@@ -21,21 +21,26 @@
       // make this event work. See:
       //
       // https://developer.mozilla.org/en-US/docs/Web/Events/MozAfterPaint
-      var firstPaint = 0;
+      var paintTimes = [];
+      var loadDone = false;
       function log(e) {
-        firstPaint = performance.now();
-        window.removeEventListener("MozAfterPaint", log, false);
+        paintTimes.push(performance.now());
+        if (loadDone) {
+          window.removeEventListener("MozAfterPaint", log, false);
+        }
       }
       window.addEventListener("MozAfterPaint", log, false);
 
       window.onLoad = function() {
-        if (window.performance.timing.loadEventEnd == 0) {
-          window.setTimeout(onLoad, 1000);
-          return
+        if (window.performance.timing.loadEventEnd != 0) {
+          loadDone = true;
         }
-        var lastPaintDelaySeconds = (window.performance.timing.loadEventEnd -
-            window.performance.timing.navigationStart) / 1000.0;
-        var firstPaintDelaySeconds = firstPaint != 0 ? firstPaint / 1000.0 : lastPaintDelaySeconds;
+        if (paintTimes.length == 0 || window.performance.timing.loadEventEnd == 0) {
+          window.requestAnimationFrame(onLoad);
+          return;
+        }
+        var firstPaintDelaySeconds = paintTimes[0] / 1000.0;
+        var lastPaintDelaySeconds = paintTimes[paintTimes.length - 1] / 1000.0;
         console.log('Seconds to first paint: ' + firstPaintDelaySeconds);
         console.log('Seconds to last paint: ' + lastPaintDelaySeconds);
       };
